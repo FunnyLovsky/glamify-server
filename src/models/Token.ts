@@ -1,12 +1,7 @@
 import { Schema, model } from "mongoose";
-import { IUser } from "../dtos/userDto";
+import { ITokenSchema } from "../types/IToken";
 
-export interface IToken {
-    user: IUser,
-    refreshToken: string
-}
-
-const TokenShema = new Schema({
+const TokenShema = new Schema<ITokenSchema>({
     user: {type: Schema.Types.ObjectId, ref: 'User'},
     refreshToken: {type: String, required: true}
 })

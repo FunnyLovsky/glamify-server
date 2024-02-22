@@ -1,7 +1,8 @@
 import jwt, { JwtPayload } from "jsonwebtoken"
 import Token from "../models/Token";
 import { Types } from "mongoose";
-import { IUser } from "../dtos/userDto";
+import { IUser } from "../types/IUser";
+
 
 class TokenService {
     generateTokens(payload: IUser) {

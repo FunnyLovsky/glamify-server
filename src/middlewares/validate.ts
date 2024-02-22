@@ -3,7 +3,7 @@ import { body, validationResult } from "express-validator";
 import ApiError from "../exceptions/api-error";
 
 
-export const validateMiddleware = [
+const validateMiddleware = [
     body('email').isEmail(),
     body('password').isLength({ min: 3, max: 10 }),
 
@@ -18,3 +18,5 @@ export const validateMiddleware = [
         next();
     }
 ];
+
+export default validateMiddleware;
