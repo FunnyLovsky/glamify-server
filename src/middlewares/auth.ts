@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import ApiError from "../exceptions/api-error";
 import tokenService from "../service/tokenService";
-import { IUser } from "../dtos/userDto";
+import { IUser } from "../types/IUser";
+
 
 
 interface AuthRequest extends Request {
