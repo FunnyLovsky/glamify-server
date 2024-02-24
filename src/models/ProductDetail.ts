@@ -8,10 +8,10 @@ const colorSchema = new Schema<ColorSchema>({
 });
 
 const ProductDetailSchema = new Schema<ProductDetailSchema>({
-    product: {type: Schema.Types.ObjectId, ref: 'Product'},
+    product: { type: String, required: true },
     description: { type: String, required: true },
     sizes: [{ type: String, required: true }],
-    details: { type: String },
+    details: [{ type: [String] }],
     colors: { type: [colorSchema], required: true }
 })
 

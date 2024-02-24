@@ -19,4 +19,8 @@ export default class ApiError extends Error {
     static ValidationFailed(message: string, errors: any[] = []) {
         return new ApiError(422, message, errors)
     }
+
+    static Conflict(message: string, errors: any[] = []) {
+        return new ApiError(409, message, errors);
+    }
 }

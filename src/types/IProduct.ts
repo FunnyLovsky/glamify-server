@@ -6,18 +6,24 @@ export interface ProductSchema extends Document {
     rating: number;
     price: number;
     discount: number | null;
+    url: string;
+    category: string[];
+    style: string;
+    salesCount: number;
+    date: Date
 }
 
 export interface ProductDetailSchema extends Document {
-    product: ProductSchema,
+    product: string,
     description: string;
     sizes: string[];
-    details: string;
+    details: [ string[] ];
     colors: ColorSchema[];
 }
 
 export interface ColorSchema extends Document {
     name: string;
+    code: string;
     images: string[]; 
 }
 
