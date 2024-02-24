@@ -17,6 +17,31 @@ class ProductController {
             next(error)
         }
     }
+
+    async getOneProduct(req: Request, res: Response, next: NextFunction) {
+        try {
+            const productId = req.params.productId;
+
+            const data = await productService.getProduct(productId);
+
+            return res.status(200).json(data)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async getProductList(req: Request, res: Response, next: NextFunction) {
+        try {
+            const name = req.query.name
+            const gender = req.query.gender
+
+     
+
+            return res.status(200).json({})
+        } catch (error) {
+            next(error)
+        }
+    }
 }
 
 export default new ProductController();

@@ -1,3 +1,4 @@
+import ProductDto from "../dtos/productDto";
 import ApiError from "../exceptions/api-error";
 import Product from "../models/Product";
 import ProductDetail from "../models/ProductDetail";
@@ -16,10 +17,27 @@ class ProductService {
         }
 
         return await transactionService.withTransaction(async () => {
+
             const productData = await Product.create(product);
             await ProductDetail.create({...detail, product: productData.url});
+
             return { message: `Товар успешно создан`, product: productData.name};
         })
+    }
+
+    async getProduct(url: string) {
+
+        const product = await Product.findOne({url});
+
+        if(!product) {
+            throw ApiError.BadRequest('Товар не найден')
+        }
+
+        const detail = await ProductDetail.findOne({product: url});
+
+        const result = new ProductDto(product, detail!);
+
+        return result
     }
 }
 

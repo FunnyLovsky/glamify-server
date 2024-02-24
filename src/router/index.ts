@@ -5,6 +5,6 @@ import productRouter from './productRouter';
 const router = Router()
 
 router.use('/user', userRouter);
-router.use('/product', productRouter)
+router.use('/', productRouter)
 
 export default router;
