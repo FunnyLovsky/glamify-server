@@ -6,24 +6,20 @@ import transactionService from "./transactionService";
 
 class ProductService {
     async createProduct(data: ProductWithDetail) {
-        try {
-            const { product, detail } = data;
 
-            const existingProduct  = await Product.findOne({url: product.url});
+        const { product, detail } = data;
+
+        const existingProduct  = await Product.findOne({url: product.url});
             
-            if(existingProduct ) {
-                throw ApiError.Conflict('Такой товар уже существует!')
-            }
-
-            return await transactionService.withTransaction(async () => {
-                const productData = await Product.create(product);
-                await ProductDetail.create({...detail, product: productData.url});
-                return { message: `Товар успешно создан`, product: productData.name};
-            })
-        } catch (error) {
-            throw new Error(`Ошибка при создании товара`);
+        if(existingProduct ) {
+            throw ApiError.Conflict('Такой товар уже существует!')
         }
 
+        return await transactionService.withTransaction(async () => {
+            const productData = await Product.create(product);
+            await ProductDetail.create({...detail, product: productData.url});
+            return { message: `Товар успешно создан`, product: productData.name};
+        })
     }
 }
 

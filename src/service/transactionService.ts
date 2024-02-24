@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import ApiError from "../exceptions/api-error";
 
 type TCallback = () => Promise<object>
 
@@ -8,19 +9,22 @@ class TransactionService {
         try {
             session = await mongoose.startSession();
             session.startTransaction();
-
+            console.log('startSession');
+            
             const result = await asyncCallback();
 
             await session.commitTransaction();
             return result;
-        } catch (error) {
+        } catch (error: any) {
             if (session) {
                 await session.abortTransaction();
+                console.log('errSession');
             }
-            throw error;
+            throw ApiError.BadRequest('Ошибка при создании продукта', [error.message]);
         } finally {
             if (session) {
                 session.endSession();
+                console.log('endSession');
             }
         }
     }
