@@ -7,7 +7,8 @@ export interface ProductSchema extends Document {
     price: number;
     discount: number | null;
     url: string;
-    category: string[];
+    category: string;
+    gender: string;
     style: string;
     salesCount: number;
     date: Date

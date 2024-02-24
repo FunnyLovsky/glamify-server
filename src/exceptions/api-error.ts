@@ -16,6 +16,10 @@ export default class ApiError extends Error {
         return new ApiError(400, message, errors)
     }
 
+    static NotFound(message: string, errors: any[] = []) {
+        return new ApiError(404, message, errors)
+    }
+
     static ValidationFailed(message: string, errors: any[] = []) {
         return new ApiError(422, message, errors)
     }

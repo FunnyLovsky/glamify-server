@@ -11,7 +11,8 @@ const ProductSchema = new Schema<ProductSchema>({
     date: {type: Date, required: true},
     salesCount: { type: Number, required: true },
     style: { type: String, required: true },
-    category: [{type: String, required: true}]
+    category: {type: String, required: true},
+    gender: {type: String, required: true},
 })
 
 export default model('Product', ProductSchema);

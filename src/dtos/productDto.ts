@@ -7,7 +7,8 @@ export default class ProductDto {
     price: number;
     discount: number | null;
     url: string;
-    category: string[];
+    category: string;
+    gender: string;
     style: string;
     salesCount: number;
     date: Date;
@@ -27,6 +28,7 @@ export default class ProductDto {
         this.style = product.style;
         this.salesCount = product.salesCount;
         this.date = product.date;
+        this.gender = product.gender;
 
         this.description = detail.description;
         this.sizes = detail.sizes;

@@ -4,6 +4,7 @@ import { ColorSchema, ProductDetailSchema, ProductSchema } from "../types/IProdu
 
 const colorSchema = new Schema<ColorSchema>({
     name: { type: String, required: true },
+    code: { type: String, required: true },
     images: [{ type: String, required: true }]
 });
 

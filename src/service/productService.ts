@@ -35,9 +35,17 @@ class ProductService {
 
         const detail = await ProductDetail.findOne({product: url});
 
-        const result = new ProductDto(product, detail!);
+        return new ProductDto(product, detail!);
+    }
 
-        return result
+    async findProducts(filters: any) {
+        const products = await Product.find(filters)
+
+        if(products.length === 0) {
+            throw ApiError.NotFound('По данному запросы ничего не найдено')
+        }
+
+        return products
     }
 }
 
