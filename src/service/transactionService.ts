@@ -23,7 +23,7 @@ class TransactionService {
             throw ApiError.BadRequest('Ошибка при создании продукта', [error.message]);
         } finally {
             if (session) {
-                session.endSession();
+                await session.endSession();
                 console.log('endSession');
             }
         }

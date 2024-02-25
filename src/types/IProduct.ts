@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { Document } from "mongoose";
 
 export interface ProductSchema extends Document {
@@ -11,15 +12,15 @@ export interface ProductSchema extends Document {
     gender: string;
     style: string;
     salesCount: number;
-    date: Date
+    date: Date;
+    colors: ColorSchema[];
+    sizes: string[];
 }
 
 export interface ProductDetailSchema extends Document {
-    product: string,
+    productId: Types.ObjectId,
     description: string;
-    sizes: string[];
     details: [ string[] ];
-    colors: ColorSchema[];
 }
 
 export interface ColorSchema extends Document {

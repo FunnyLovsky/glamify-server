@@ -32,27 +32,12 @@ class ProductController {
 
     async getProductList(req: Request, res: Response, next: NextFunction) {
         try {
-            const {name, gender, category, style, price} = req.query
-            const filters: any = {};
-            
-            if (name) {
-                filters.name = new RegExp(name.toString(), 'i');
-            }
-            if (gender) {
-                filters.gender = gender  
-            }
-            if (category) {
-                filters.category = category;
-            }
-            if (style) {
-                filters.style = style;
-            }
-            if(price) {
-                const [min, max] = price.toString().split('-');
-                filters.price = { $gte: parseInt(min), $lte: parseInt(max) }
-            }
-            
-            const products = await productService.findProducts(filters)
+
+            const filters = productService.getFilters(req);
+            const sort = productService.getSorts(req);
+            const {products, totalCount} = await productService.findProducts(filters, sort, req);
+
+            res.setHeader('X-Total-Count', totalCount.toString());
 
             return res.status(200).json(products)
         } catch (error) {
