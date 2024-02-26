@@ -92,6 +92,18 @@ class CartService {
         }
     
         cart.products[productIndex].count = count;
+
+        await cart.save();
+    }
+
+    async removeAllProducts( userId: Types.ObjectId) {
+        const cart = await Cart.findOne({userId});
+
+        if(!cart) {
+            throw ApiError.BadRequest('Корзина не найдена')
+        }
+
+        cart.products = [];
         
         await cart.save();
     }

@@ -3,6 +3,7 @@ import { AuthRequest } from "../types/IUser";
 import cartService from "../service/cartService";
 import ApiError from "../exceptions/api-error";
 import { IProductCart, ProductCartSchema } from "../types/ICart";
+import { Types } from "mongoose";
 
 class CartController {
     async addProduct(req: AuthRequest, res: Response, next: NextFunction) {
@@ -20,11 +21,22 @@ class CartController {
 
     async deleteProduct(req: AuthRequest, res: Response, next: NextFunction) {
         try {
-            const { productId } = req.body as ProductCartSchema;
+            const productId = req.params.productId as unknown as Types.ObjectId
             const userId = req.user!.id;
 
             await cartService.removeProduct(productId, userId);
             return res.status(200).json({message: 'Товар удален из корзины!'})
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async clearCart(req: AuthRequest, res: Response, next: NextFunction) {
+        try {
+            const userId = req.user!.id;
+
+            await cartService.removeAllProducts(userId);
+            return res.status(200).json({message: 'Корзина очищена!'})
         } catch (error) {
             next(error)
         }
