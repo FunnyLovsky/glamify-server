@@ -13,7 +13,7 @@ import { IUserSchema } from "../types/IUser";
 
 
 class UserService {
-    async registration(email: string, password: string, name: string, products: ProductCartSchema[]) {
+    async registration(email: string, password: string, name: string, products: ProductCartSchema[] | null) {
         
         const candidate = await User.findOne({email})
 
@@ -31,6 +31,8 @@ class UserService {
             const tokens = tokenService.generateTokens({...userDto});
 
             await tokenService.saveToken(userDto.id, tokens.refreshToken, session);
+
+        
             const cartProducts = await cartService.createCart(userDto.id, products);
 
             return { ...tokens, user: userDto, cart: cartProducts } 
