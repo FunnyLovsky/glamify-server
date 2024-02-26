@@ -6,8 +6,8 @@ class UserControllers {
 
     async registration(reg: Request, res: Response, next: NextFunction) {
         try {
-            const {email, password, name} = reg.body;
-            const userData = await userService.registration(email, password, name);
+            const {email, password, name, products} = reg.body;
+            const userData = await userService.registration(email, password, name, products);
             res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 3600 * 1000, httpOnly: true})
             return res.status(200).json(userData)
         } catch (error: any) {

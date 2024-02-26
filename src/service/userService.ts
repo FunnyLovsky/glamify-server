@@ -5,10 +5,13 @@ import tokenService from "./tokenService";
 import ApiError from "../exceptions/api-error";
 import Token from "../models/Token";
 import UserDto from "../dtos/userDto";
+import transactionService from "./transactionService";
+import { ProductCartSchema } from "../types/ICart";
+import cartService from "./cartService";
 
 
 class UserService {
-    async registration(email: string, password: string, name: string) {
+    async registration(email: string, password: string, name: string, products: ProductCartSchema) {
         const candidate = await User.findOne({email});
 
         if(candidate) {
@@ -16,13 +19,16 @@ class UserService {
         }
         const hashPassword = await bcrypt.hash(password, 3);
 
-        const user = await User.create({email, password: hashPassword, name});
+        return await transactionService.withTransaction(async () => {
+            const user = await User.create({email, password: hashPassword, name});
 
-        const userDto = new UserDto(user)
-        const tokens = tokenService.generateTokens({...userDto});
-        await tokenService.saveToken(userDto.id, tokens.refreshToken);
-
-        return { ...tokens, user: userDto }
+            const userDto = new UserDto(user)
+            const tokens = tokenService.generateTokens({...userDto});
+            await tokenService.saveToken(userDto.id, tokens.refreshToken);
+            const cartProducts = await cartService.createCart(userDto.id, products);
+            
+            return { ...tokens, user: userDto, cart: cartProducts } 
+        }) as {refreshToken: string}
     }
 
     async login(email: string, password: string) {
