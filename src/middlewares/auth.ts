@@ -1,13 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import ApiError from "../exceptions/api-error";
 import tokenService from "../service/tokenService";
-import { IUser } from "../types/IUser";
+import { AuthRequest, IUser } from "../types/IUser";
 
-
-
-interface AuthRequest extends Request {
-    user?: IUser
-}
 
 export default function(req: AuthRequest, res: Response, next: NextFunction) {
     try {

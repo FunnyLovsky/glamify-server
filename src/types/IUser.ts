@@ -1,3 +1,4 @@
+import { Request } from "express";
 import { Document, Types } from "mongoose";
 
 export interface IUser {
@@ -12,3 +13,6 @@ export interface IUserSchema extends Document {
     name: string,
 }
 
+export interface AuthRequest extends Request {
+    user?: IUser
+}

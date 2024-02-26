@@ -20,9 +20,9 @@ class ProductController {
 
     async getOneProduct(req: Request, res: Response, next: NextFunction) {
         try {
-            const productId = req.params.productId;
+            const url = req.params.url;
 
-            const data = await productService.getProduct(productId);
+            const data = await productService.getProduct(url);
 
             return res.status(200).json(data)
         } catch (error) {

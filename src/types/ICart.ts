@@ -1,10 +1,7 @@
 import { Document, Types } from "mongoose";
 
 export interface ProductCartSchema extends Document {
-    name: string;
-    image: string;
-    price: number;
-    discount: number | null;
+    productId: Types.ObjectId;
     size: string;
     color: string;
     count: number;
@@ -15,7 +12,10 @@ export interface CartSchema extends Document {
     products: ProductCartSchema[]
 }
 
-export interface ICart {
-    userId: Types.ObjectId;
-    products: ProductCartSchema[] | null;
+
+export interface IProductCart {
+    productId: string;
+    size: string;
+    color: string;
+    count: number;
 }

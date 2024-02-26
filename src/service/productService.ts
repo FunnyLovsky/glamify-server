@@ -36,7 +36,7 @@ class ProductService {
             throw ApiError.BadRequest('Товар не найден')
         }
 
-        const detail = await ProductDetail.findOne({product: url});
+        const detail = await ProductDetail.findOne({productId: product._id});
 
         return new ProductDetailDto(product, detail!);
     }

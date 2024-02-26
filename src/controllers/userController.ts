@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import userService from "../service/userService";
 import tokenService from "../service/tokenService";
+import { AuthRequest } from "../types/IUser";
 
 class UserControllers {
 
@@ -58,9 +59,9 @@ class UserControllers {
         }
     }
 
-    async deleteUser(reg: Request, res: Response, next: NextFunction) {
+    async deleteUser(reg: AuthRequest, res: Response, next: NextFunction) {
         try {
-            const {email} = reg.body;
+            const {email} = reg.user!;
             const message = await userService.deleteUser(email);
 
             return res.status(200).json(message)
