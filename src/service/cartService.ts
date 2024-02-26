@@ -2,6 +2,7 @@ import { Types } from "mongoose";
 import Cart from "../models/Cart";
 import { ProductCartSchema } from "../types/ICart";
 import ApiError from "../exceptions/api-error";
+import Product from "../models/Product";
 
 class CartService {
     async createCart(userId: Types.ObjectId, products: ProductCartSchema[] | null) {
@@ -50,13 +51,49 @@ class CartService {
     }
 
     async getCartProducts(userId: Types.ObjectId) {
-        const cart = await Cart.findOne({userId});
-
-        if(!cart) {
-            throw ApiError.BadRequest('Корзина не найдена')
+        const cart = await Cart.findOne({ userId });
+    
+        if (!cart) {
+            throw ApiError.BadRequest('Корзина не найдена');
         }
+    
+        const productIds = cart.products.map(product => product.productId);
+    
 
-        return cart.products
+        const cartProducts = await Product.find({ _id: { $in: productIds } }, { image: 1, name: 1, price: 1, discount: 1 });
+    
+        const productsWithDetails = cart.products.map(product => {
+            const foundProduct = cartProducts.find(p => p._id.equals(product.productId));
+            return {
+                image: foundProduct!.image,
+                name: foundProduct!.name,
+                price: foundProduct!.price,
+                discount: foundProduct!.discount,
+                color: product.color,
+                size: product.size,
+                count: product.count
+            };
+        });
+    
+        return productsWithDetails;
+    }
+
+    async updateCartProducts(userId: Types.ObjectId, count: number, productId: Types.ObjectId) {
+        const cart = await Cart.findOne({ userId });
+
+        if (!cart) {
+            throw ApiError.BadRequest('Корзина не найдена');
+        }
+    
+        const productIndex = cart.products.findIndex(product => product.productId.equals(productId));
+    
+        if (productIndex === -1) {
+            throw ApiError.BadRequest('Продукт не найден в корзине');
+        }
+    
+        cart.products[productIndex].count = count;
+        
+        await cart.save();
     }
 }
 

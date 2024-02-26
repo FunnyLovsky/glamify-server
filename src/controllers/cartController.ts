@@ -41,6 +41,19 @@ class CartController {
             next(error)
         }
     }
+
+    async updateProducts(req: AuthRequest, res: Response, next: NextFunction) {
+        try {
+            const {count, productId} = req.body;
+            const userId = req.user!.id;
+
+            await cartService.updateCartProducts(userId, count, productId);
+
+            return res.status(200).json({message: 'Товар обновлен!'})
+        } catch (error) {
+            next(error)
+        }
+    }
 }
 
 export default new CartController();
