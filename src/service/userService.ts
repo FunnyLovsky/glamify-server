@@ -10,6 +10,7 @@ import { ProductCartSchema } from "../types/ICart";
 import cartService from "./cartService";
 import Cart from "../models/Cart";
 import { IUserSchema } from "../types/IUser";
+import { Types } from "mongoose";
 
 
 class UserService {
@@ -80,16 +81,6 @@ class UserService {
         return { ...tokens, user: userDto }
     }
 
-    async getAllUsers() {
-        const users = await User.find();
-
-        if(!users.length) {
-            throw ApiError.BadRequest('Пользователи отсутствуют')
-        }
-
-        return users;
-    }
-
     async deleteUser(email: string) {
         const user = await User.findOne({email});
 
@@ -104,6 +95,20 @@ class UserService {
     
             return {message: `Пользователь ${email} успешно удален`}
         })
+    }
+
+    async auth(id: Types.ObjectId) {
+        const user = await User.findOne({_id: id});
+
+        if(!user) {
+            throw ApiError.BadRequest(`Пользователь  не найден`)
+        }
+ 
+        const userDto = new UserDto(user);
+        const tokens = tokenService.generateTokens({...userDto});
+        const cart = await cartService.getCartProducts(id)
+        await tokenService.saveToken(userDto.id, tokens.refreshToken);
+        return { ...tokens, user: userDto, cart }
     }
 }
 

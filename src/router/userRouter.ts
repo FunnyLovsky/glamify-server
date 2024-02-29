@@ -9,6 +9,7 @@ router.post('/registration', validateMiddleware, userController.registration);
 router.post('/login', userController.login);
 router.post('/logout', userController.logout);
 router.get('/refresh', userController.refresh);
-router.post('/delete',authMiddleware, userController.deleteUser);
+router.delete('/delete', authMiddleware, userController.deleteUser);
+router.get('/auth', authMiddleware, userController.auth)
 
 export default router;

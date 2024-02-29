@@ -49,11 +49,13 @@ class UserControllers {
         }
     }
 
-    async getUser(reg: Request, res: Response, next: NextFunction) {
+    async auth(req: AuthRequest, res: Response, next: NextFunction) {
         try {
-            const users = await userService.getAllUsers();
-
-            return res.status(200).json(users)
+            const { id } = req.user!;
+            const userData = await userService.auth(id);
+            
+            res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 3600 * 1000, httpOnly: true})
+            return res.status(200).json(userData)
         } catch (error) {
             next(error)
         }
