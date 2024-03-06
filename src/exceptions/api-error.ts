@@ -1,11 +1,11 @@
 export default class ApiError extends Error {
-    status: number;
-    errors: any[];
+    status: number
+    errors: any[]
 
     constructor(status: number, message: string, errors: any[] = []) {
-        super(message);
-        this.status = status;
-        this.errors = errors;
+        super(message)
+        this.status = status
+        this.errors = errors
     }
 
     static UnAutoriseError() {
@@ -25,6 +25,6 @@ export default class ApiError extends Error {
     }
 
     static Conflict(message: string, errors: any[] = []) {
-        return new ApiError(409, message, errors);
+        return new ApiError(409, message, errors)
     }
 }

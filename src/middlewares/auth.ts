@@ -1,31 +1,30 @@
-import { NextFunction, Request, Response } from "express";
-import ApiError from "../exceptions/api-error";
-import tokenService from "../service/tokenService";
-import { AuthRequest, IUser } from "../types/IUser";
+import { NextFunction, Response } from 'express'
+import ApiError from '../exceptions/api-error'
+import tokenService from '../service/tokenService'
+import { AuthRequest } from '../types/IUser'
 
-
-export default function(req: AuthRequest, res: Response, next: NextFunction) {
+export default function (req: AuthRequest, res: Response, next: NextFunction) {
     try {
-        const autorizateHeader = req.headers.authorization;
+        const autorizateHeader = req.headers.authorization
 
-        if(!autorizateHeader) {
+        if (!autorizateHeader) {
             return next(ApiError.UnAutoriseError())
         }
 
-        const accessToken = autorizateHeader.split(' ')[1];
+        const accessToken = autorizateHeader.split(' ')[1]
 
-        if(!accessToken) {
+        if (!accessToken) {
             return next(ApiError.UnAutoriseError())
         }
 
-        const userData = tokenService.validateAccessToken(accessToken);
+        const userData = tokenService.validateAccessToken(accessToken)
 
-        if(!userData) {
+        if (!userData) {
             return next(ApiError.UnAutoriseError())
         }
 
-        req.user = userData;
-        next();
+        req.user = userData
+        next()
     } catch (error) {
         return next(ApiError.UnAutoriseError())
     }

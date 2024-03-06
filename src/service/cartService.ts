@@ -1,69 +1,73 @@
-import { Types } from "mongoose";
-import Cart from "../models/Cart";
-import { ProductCartSchema } from "../types/ICart";
-import ApiError from "../exceptions/api-error";
-import Product from "../models/Product";
+import { Types } from 'mongoose'
+import Cart from '../models/Cart'
+import { ProductCartSchema } from '../types/ICart'
+import ApiError from '../exceptions/api-error'
+import Product from '../models/Product'
 
 class CartService {
     async createCart(userId: Types.ObjectId, products: ProductCartSchema[] | null) {
-        const cart = await Cart.findOne({userId});
+        const cart = await Cart.findOne({ userId })
 
-        if(cart) {
+        if (cart) {
             throw ApiError.BadRequest('Корзина уже существует')
         }
 
-        const cartProduct = await Cart.create({userId, products});
-        return cartProduct.products 
+        const cartProduct = await Cart.create({ userId, products })
+        return cartProduct.products
     }
-    
+
     async addProduct(productCart: ProductCartSchema, userId: Types.ObjectId) {
-        const cart = await Cart.findOne({userId});
+        const cart = await Cart.findOne({ userId })
 
-        if(!cart) {
+        if (!cart) {
             throw ApiError.BadRequest('Корзина не существует')
-        } 
+        }
 
-        const existingProduct = cart.products.find(item => item.productId.equals(productCart.productId));
-     
+        const existingProduct = cart.products.find((item) =>
+            item.productId.equals(productCart.productId)
+        )
+
         if (existingProduct) {
             throw ApiError.BadRequest('Этот товар уже добавлен')
         }
-    
-        cart.products.push(productCart);
-        await cart.save();
+
+        cart.products.push(productCart)
+        await cart.save()
     }
 
     async removeProduct(productId: Types.ObjectId, userId: Types.ObjectId) {
-        const cart = await Cart.findOne({userId});
+        const cart = await Cart.findOne({ userId })
 
-        if(!cart) {
+        if (!cart) {
             throw ApiError.BadRequest('Корзина не найдена')
         }
 
-        const index = cart.products.findIndex(item => item.productId.equals(productId));
+        const index = cart.products.findIndex((item) => item.productId.equals(productId))
 
         if (index === -1) {
-            throw ApiError.BadRequest('Товар не найден в корзине');
+            throw ApiError.BadRequest('Товар не найден в корзине')
         }
 
-        cart.products.splice(index, 1);
-        await cart.save();
+        cart.products.splice(index, 1)
+        await cart.save()
     }
 
     async getCartProducts(userId: Types.ObjectId) {
-        const cart = await Cart.findOne({ userId });
-    
-        if (!cart) {
-            throw ApiError.BadRequest('Корзина не найдена');
-        }
-    
-        const productIds = cart.products.map(product => product.productId);
-    
+        const cart = await Cart.findOne({ userId })
 
-        const cartProducts = await Product.find({ _id: { $in: productIds } }, { image: 1, name: 1, price: 1, discount: 1 });
-    
-        const productsWithDetails = cart.products.map(product => {
-            const foundProduct = cartProducts.find(p => p._id.equals(product.productId));
+        if (!cart) {
+            throw ApiError.BadRequest('Корзина не найдена')
+        }
+
+        const productIds = cart.products.map((product) => product.productId)
+
+        const cartProducts = await Product.find(
+            { _id: { $in: productIds } },
+            { image: 1, name: 1, price: 1, discount: 1 }
+        )
+
+        const productsWithDetails = cart.products.map((product) => {
+            const foundProduct = cartProducts.find((p) => p._id.equals(product.productId))
             return {
                 image: foundProduct!.image,
                 name: foundProduct!.name,
@@ -71,41 +75,43 @@ class CartService {
                 discount: foundProduct!.discount,
                 color: product.color,
                 size: product.size,
-                count: product.count
-            };
-        });
-    
-        return productsWithDetails;
+                count: product.count,
+            }
+        })
+
+        return productsWithDetails
     }
 
     async updateCartProducts(userId: Types.ObjectId, count: number, productId: Types.ObjectId) {
-        const cart = await Cart.findOne({ userId });
+        const cart = await Cart.findOne({ userId })
 
         if (!cart) {
-            throw ApiError.BadRequest('Корзина не найдена');
-        }
-    
-        const productIndex = cart.products.findIndex(product => product.productId.equals(productId));
-    
-        if (productIndex === -1) {
-            throw ApiError.BadRequest('Продукт не найден в корзине');
-        }
-    
-        cart.products[productIndex].count = count;
-
-        await cart.save();
-    }
-
-    async removeAllProducts( userId: Types.ObjectId) {
-        const cart = await Cart.findOne({userId});
-
-        if(!cart) {
             throw ApiError.BadRequest('Корзина не найдена')
         }
 
-        cart.products = [];
-        
-        await cart.save();
+        const productIndex = cart.products.findIndex((product) =>
+            product.productId.equals(productId)
+        )
+
+        if (productIndex === -1) {
+            throw ApiError.BadRequest('Продукт не найден в корзине')
+        }
+
+        cart.products[productIndex].count = count
+
+        await cart.save()
+    }
+
+    async removeAllProducts(userId: Types.ObjectId) {
+        const cart = await Cart.findOne({ userId })
+
+        if (!cart) {
+            throw ApiError.BadRequest('Корзина не найдена')
+        }
+
+        cart.products = []
+
+        await cart.save()
     }
 }
 

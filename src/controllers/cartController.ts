@@ -1,19 +1,19 @@
-import { NextFunction, Request, Response } from "express";
-import { AuthRequest } from "../types/IUser";
-import cartService from "../service/cartService";
-import ApiError from "../exceptions/api-error";
-import { IProductCart, ProductCartSchema } from "../types/ICart";
-import { Types } from "mongoose";
+import { NextFunction, Request, Response } from 'express'
+import { AuthRequest } from '../types/IUser'
+import cartService from '../service/cartService'
+import ApiError from '../exceptions/api-error'
+import { IProductCart, ProductCartSchema } from '../types/ICart'
+import { Types } from 'mongoose'
 
 class CartController {
     async addProduct(req: AuthRequest, res: Response, next: NextFunction) {
         try {
-            const productCart = req.body as ProductCartSchema;
-            const userId = req.user!.id;
+            const productCart = req.body as ProductCartSchema
+            const userId = req.user!.id
 
-            await cartService.addProduct(productCart, userId);
+            await cartService.addProduct(productCart, userId)
 
-            return res.status(200).json({message: 'Товар добавлен в корзину!'})
+            return res.status(200).json({ message: 'Товар добавлен в корзину!' })
         } catch (error) {
             next(error)
         }
@@ -22,10 +22,10 @@ class CartController {
     async deleteProduct(req: AuthRequest, res: Response, next: NextFunction) {
         try {
             const productId = req.params.productId as unknown as Types.ObjectId
-            const userId = req.user!.id;
+            const userId = req.user!.id
 
-            await cartService.removeProduct(productId, userId);
-            return res.status(200).json({message: 'Товар удален из корзины!'})
+            await cartService.removeProduct(productId, userId)
+            return res.status(200).json({ message: 'Товар удален из корзины!' })
         } catch (error) {
             next(error)
         }
@@ -33,10 +33,10 @@ class CartController {
 
     async clearCart(req: AuthRequest, res: Response, next: NextFunction) {
         try {
-            const userId = req.user!.id;
+            const userId = req.user!.id
 
-            await cartService.removeAllProducts(userId);
-            return res.status(200).json({message: 'Корзина очищена!'})
+            await cartService.removeAllProducts(userId)
+            return res.status(200).json({ message: 'Корзина очищена!' })
         } catch (error) {
             next(error)
         }
@@ -44,11 +44,11 @@ class CartController {
 
     async getProducts(req: AuthRequest, res: Response, next: NextFunction) {
         try {
-            const userId = req.user!.id;
+            const userId = req.user!.id
 
-            const products = await cartService.getCartProducts(userId);
+            const products = await cartService.getCartProducts(userId)
 
-            return res.status(200).json({cart: products})
+            return res.status(200).json({ cart: products })
         } catch (error) {
             next(error)
         }
@@ -56,16 +56,16 @@ class CartController {
 
     async updateProducts(req: AuthRequest, res: Response, next: NextFunction) {
         try {
-            const {count, productId} = req.body;
-            const userId = req.user!.id;
+            const { count, productId } = req.body
+            const userId = req.user!.id
 
-            await cartService.updateCartProducts(userId, count, productId);
+            await cartService.updateCartProducts(userId, count, productId)
 
-            return res.status(200).json({message: 'Товар обновлен!'})
+            return res.status(200).json({ message: 'Товар обновлен!' })
         } catch (error) {
             next(error)
         }
     }
 }
 
-export default new CartController();
+export default new CartController()

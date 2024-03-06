@@ -1,15 +1,17 @@
-import { NextFunction, Request, Response } from "express";
-import userService from "../service/userService";
-import tokenService from "../service/tokenService";
-import { AuthRequest } from "../types/IUser";
+import { NextFunction, Request, Response } from 'express'
+import userService from '../service/userService'
+import tokenService from '../service/tokenService'
+import { AuthRequest } from '../types/IUser'
 
 class UserControllers {
-
     async registration(reg: Request, res: Response, next: NextFunction) {
         try {
-            const {email, password, name, products} = reg.body;
-            const userData = await userService.registration(email, password, name, products);
-            res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 3600 * 1000, httpOnly: true})
+            const { email, password, name, products } = reg.body
+            const userData = await userService.registration(email, password, name, products)
+            res.cookie('refreshToken', userData.refreshToken, {
+                maxAge: 30 * 24 * 3600 * 1000,
+                httpOnly: true,
+            })
             return res.status(200).json(userData)
         } catch (error: any) {
             next(error)
@@ -18,9 +20,12 @@ class UserControllers {
 
     async login(reg: Request, res: Response, next: NextFunction) {
         try {
-            const {email, password} = reg.body;
-            const userData = await userService.login(email, password);
-            res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 3600 * 1000, httpOnly: true})
+            const { email, password } = reg.body
+            const userData = await userService.login(email, password)
+            res.cookie('refreshToken', userData.refreshToken, {
+                maxAge: 30 * 24 * 3600 * 1000,
+                httpOnly: true,
+            })
             return res.status(200).json(userData)
         } catch (error) {
             next(error)
@@ -29,10 +34,10 @@ class UserControllers {
 
     async logout(reg: Request, res: Response, next: NextFunction) {
         try {
-            const {refreshToken} = reg.cookies;
-            const message = await tokenService.removeToken(refreshToken);
-            res.clearCookie('refreshToken');
-            return res.status(200).json(message);
+            const { refreshToken } = reg.cookies
+            const message = await tokenService.removeToken(refreshToken)
+            res.clearCookie('refreshToken')
+            return res.status(200).json(message)
         } catch (error) {
             next(error)
         }
@@ -40,9 +45,12 @@ class UserControllers {
 
     async refresh(reg: Request, res: Response, next: NextFunction) {
         try {
-            const {refreshToken} = reg.cookies;
-            const userData = await userService.refresh(refreshToken);
-            res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 3600 * 1000, httpOnly: true})
+            const { refreshToken } = reg.cookies
+            const userData = await userService.refresh(refreshToken)
+            res.cookie('refreshToken', userData.refreshToken, {
+                maxAge: 30 * 24 * 3600 * 1000,
+                httpOnly: true,
+            })
             return res.status(200).json(userData)
         } catch (error) {
             next(error)
@@ -51,10 +59,13 @@ class UserControllers {
 
     async auth(req: AuthRequest, res: Response, next: NextFunction) {
         try {
-            const { id } = req.user!;
-            const userData = await userService.auth(id);
-            
-            res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 3600 * 1000, httpOnly: true})
+            const { id } = req.user!
+            const userData = await userService.auth(id)
+
+            res.cookie('refreshToken', userData.refreshToken, {
+                maxAge: 30 * 24 * 3600 * 1000,
+                httpOnly: true,
+            })
             return res.status(200).json(userData)
         } catch (error) {
             next(error)
@@ -63,8 +74,8 @@ class UserControllers {
 
     async deleteUser(reg: AuthRequest, res: Response, next: NextFunction) {
         try {
-            const {email} = reg.user!;
-            const message = await userService.deleteUser(email);
+            const { email } = reg.user!
+            const message = await userService.deleteUser(email)
 
             return res.status(200).json(message)
         } catch (error) {
@@ -73,4 +84,4 @@ class UserControllers {
     }
 }
 
-export default new UserControllers();
+export default new UserControllers()
