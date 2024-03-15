@@ -12,7 +12,7 @@ class UserControllers {
                 maxAge: 30 * 24 * 3600 * 1000,
                 httpOnly: true,
                 secure: true,
-                sameSite: 'strict',
+                sameSite: 'none',
             })
             return res.status(200).json(userData)
         } catch (error: any) {
@@ -28,7 +28,7 @@ class UserControllers {
                 maxAge: 30 * 24 * 3600 * 1000,
                 httpOnly: true,
                 secure: true,
-                sameSite: 'strict',
+                sameSite: 'none',
             })
             return res.status(200).json(userData)
         } catch (error) {
@@ -55,7 +55,7 @@ class UserControllers {
                 maxAge: 30 * 24 * 3600 * 1000,
                 httpOnly: true,
                 secure: true,
-                sameSite: 'strict',
+                sameSite: 'none',
             })
             return res.status(200).json(userData)
         } catch (error) {
@@ -72,7 +72,7 @@ class UserControllers {
                 maxAge: 30 * 24 * 3600 * 1000,
                 httpOnly: true,
                 secure: true,
-                sameSite: 'strict',
+                sameSite: 'none',
             })
             return res.status(200).json(userData)
         } catch (error) {
