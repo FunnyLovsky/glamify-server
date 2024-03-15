@@ -11,6 +11,7 @@ class UserControllers {
             res.cookie('refreshToken', userData.refreshToken, {
                 maxAge: 30 * 24 * 3600 * 1000,
                 httpOnly: true,
+                secure: true,
             })
             return res.status(200).json(userData)
         } catch (error: any) {
@@ -25,6 +26,7 @@ class UserControllers {
             res.cookie('refreshToken', userData.refreshToken, {
                 maxAge: 30 * 24 * 3600 * 1000,
                 httpOnly: true,
+                secure: true,
             })
             return res.status(200).json(userData)
         } catch (error) {
@@ -50,6 +52,7 @@ class UserControllers {
             res.cookie('refreshToken', userData.refreshToken, {
                 maxAge: 30 * 24 * 3600 * 1000,
                 httpOnly: true,
+                secure: true,
             })
             return res.status(200).json(userData)
         } catch (error) {
@@ -65,6 +68,7 @@ class UserControllers {
             res.cookie('refreshToken', userData.refreshToken, {
                 maxAge: 30 * 24 * 3600 * 1000,
                 httpOnly: true,
+                secure: true,
             })
             return res.status(200).json(userData)
         } catch (error) {
