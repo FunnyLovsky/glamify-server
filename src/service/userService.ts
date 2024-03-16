@@ -55,7 +55,8 @@ class UserService {
         const userDto = new UserDto(user)
         const tokens = tokenService.generateTokens({ ...userDto })
         await tokenService.saveToken(userDto.id, tokens.refreshToken)
-        return { ...tokens, user: userDto }
+        const cart = await cartService.getCartProducts(userDto.id)
+        return { ...tokens, user: userDto, cart }
     }
 
     async refresh(refreshToken: string) {
@@ -76,7 +77,8 @@ class UserService {
         const userDto = new UserDto(user!)
         const tokens = tokenService.generateTokens({ ...userDto })
         await tokenService.saveToken(userDto.id, tokens.refreshToken)
-        return { ...tokens, user: userDto }
+        const cart = await cartService.getCartProducts(userDto.id)
+        return { ...tokens, user: userDto, cart }
     }
 
     async deleteUser(email: string) {
