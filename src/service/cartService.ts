@@ -33,6 +33,7 @@ class CartService {
 
         cart.products.push(productCart)
         await cart.save()
+        return cart.products
     }
 
     async removeProduct(productId: Types.ObjectId, userId: Types.ObjectId) {
@@ -50,6 +51,7 @@ class CartService {
 
         cart.products.splice(index, 1)
         await cart.save()
+        return cart.products
     }
 
     async getCartProducts(userId: Types.ObjectId) {
@@ -100,6 +102,7 @@ class CartService {
         cart.products[productIndex].count = count
 
         await cart.save()
+        return cart.products
     }
 
     async removeAllProducts(userId: Types.ObjectId) {
@@ -112,6 +115,7 @@ class CartService {
         cart.products = []
 
         await cart.save()
+        return cart.products
     }
 }
 

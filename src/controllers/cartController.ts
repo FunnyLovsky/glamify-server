@@ -11,9 +11,9 @@ class CartController {
             const productCart = req.body as ProductCartSchema
             const userId = req.user!.id
 
-            await cartService.addProduct(productCart, userId)
+            const cart = await cartService.addProduct(productCart, userId)
 
-            return res.status(200).json({ message: 'Товар добавлен в корзину!' })
+            return res.status(200).json({ message: 'Товар добавлен в корзину!', cart })
         } catch (error) {
             next(error)
         }
@@ -24,8 +24,8 @@ class CartController {
             const productId = req.params.productId as unknown as Types.ObjectId
             const userId = req.user!.id
 
-            await cartService.removeProduct(productId, userId)
-            return res.status(200).json({ message: 'Товар удален из корзины!' })
+            const cart = await cartService.removeProduct(productId, userId)
+            return res.status(200).json({ message: 'Товар удален из корзины!', cart })
         } catch (error) {
             next(error)
         }
@@ -35,8 +35,8 @@ class CartController {
         try {
             const userId = req.user!.id
 
-            await cartService.removeAllProducts(userId)
-            return res.status(200).json({ message: 'Корзина очищена!' })
+            const cart = await cartService.removeAllProducts(userId)
+            return res.status(200).json({ message: 'Корзина очищена!', cart })
         } catch (error) {
             next(error)
         }
@@ -46,9 +46,9 @@ class CartController {
         try {
             const userId = req.user!.id
 
-            const products = await cartService.getCartProducts(userId)
+            const cart = await cartService.getCartProducts(userId)
 
-            return res.status(200).json({ cart: products })
+            return res.status(200).json({ cart })
         } catch (error) {
             next(error)
         }
@@ -59,9 +59,9 @@ class CartController {
             const { count, productId } = req.body
             const userId = req.user!.id
 
-            await cartService.updateCartProducts(userId, count, productId)
+            const cart = await cartService.updateCartProducts(userId, count, productId)
 
-            return res.status(200).json({ message: 'Товар обновлен!' })
+            return res.status(200).json({ message: 'Товар обновлен!', cart })
         } catch (error) {
             next(error)
         }
