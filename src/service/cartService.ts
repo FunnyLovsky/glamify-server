@@ -13,7 +13,7 @@ class CartService {
         }
 
         const cartProduct = await Cart.create({ userId, products })
-        return cartProduct.products
+        return await this.getDetailProducts(cartProduct.products)
     }
 
     async addProduct(productCart: ProductCartSchema, userId: Types.ObjectId) {
@@ -33,7 +33,7 @@ class CartService {
 
         cart.products.push(productCart)
         await cart.save()
-        return cart.products
+        return await this.getDetailProducts(cart.products)
     }
 
     async removeProduct(productId: Types.ObjectId, userId: Types.ObjectId) {
@@ -51,7 +51,7 @@ class CartService {
 
         cart.products.splice(index, 1)
         await cart.save()
-        return cart.products
+        return await this.getDetailProducts(cart.products)
     }
 
     async getCartProducts(userId: Types.ObjectId) {
@@ -60,28 +60,7 @@ class CartService {
         if (!cart) {
             throw ApiError.BadRequest('Корзина не найдена')
         }
-
-        const productIds = cart.products.map((product) => product.productId)
-
-        const cartProducts = await Product.find(
-            { _id: { $in: productIds } },
-            { image: 1, name: 1, price: 1, discount: 1 }
-        )
-
-        const productsWithDetails = cart.products.map((product) => {
-            const foundProduct = cartProducts.find((p) => p._id.equals(product.productId))
-            return {
-                image: foundProduct!.image,
-                name: foundProduct!.name,
-                price: foundProduct!.price,
-                discount: foundProduct!.discount,
-                color: product.color,
-                size: product.size,
-                count: product.count,
-            }
-        })
-
-        return productsWithDetails
+        return await this.getDetailProducts(cart.products)
     }
 
     async updateCartProducts(userId: Types.ObjectId, count: number, productId: Types.ObjectId) {
@@ -102,7 +81,7 @@ class CartService {
         cart.products[productIndex].count = count
 
         await cart.save()
-        return cart.products
+        return await this.getDetailProducts(cart.products)
     }
 
     async removeAllProducts(userId: Types.ObjectId) {
@@ -115,7 +94,32 @@ class CartService {
         cart.products = []
 
         await cart.save()
-        return cart.products
+        return await this.getDetailProducts(cart.products)
+    }
+
+    async getDetailProducts(products: ProductCartSchema[]) {
+        const productIds = products.map((product) => product.productId)
+
+        const cartProducts = await Product.find(
+            { _id: { $in: productIds } },
+            { image: 1, name: 1, price: 1, discount: 1 }
+        )
+
+        const productsWithDetails = products.map((product) => {
+            const foundProduct = cartProducts.find((p) => p._id.equals(product.productId))
+            return {
+                id: foundProduct!._id,
+                image: foundProduct!.image,
+                name: foundProduct!.name,
+                price: foundProduct!.price,
+                discount: foundProduct!.discount,
+                color: product.color,
+                size: product.size,
+                count: product.count,
+            }
+        })
+
+        return productsWithDetails
     }
 }
 
