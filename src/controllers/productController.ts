@@ -36,9 +36,9 @@ class ProductController {
         try {
             const filters = productService.getFilters(req)
             const sort = productService.getSorts(req)
-            const { products, totalCount } = await productService.findProducts(filters, sort, req)
+            const products = await productService.findProducts(filters, sort, req)
 
-            res.setHeader('X-Total-Count', totalCount.toString())
+            // res.setHeader('X-Total-Count', totalCount.toString())
 
             return res.status(200).json(products)
         } catch (error) {
