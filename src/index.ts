@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 5000
 app.use(
     cors({
         credentials: true,
-        origin: process.env.CLIENT_URL,
+        origin: [process.env.CLIENT_URL!, 'https://glamify-shop.vercel.app'],
     })
 )
 app.use(express.json())
