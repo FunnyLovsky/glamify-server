@@ -36,6 +36,32 @@ class CartService {
         return await this.getDetailProducts(cart.products)
     }
 
+    async addProductList(productCart: ProductCartSchema[] | null, userId: Types.ObjectId) {
+        const cart = await Cart.findOne({ userId })
+
+        if (!cart) {
+            throw ApiError.BadRequest('Корзина не существует')
+        }
+
+        if (!productCart) {
+            return await this.getDetailProducts(cart.products)
+        }
+
+        for (const product of productCart) {
+            const existingProduct = cart.products.find((item) =>
+                item.productId.equals(product.productId)
+            )
+
+            if (existingProduct) {
+                throw ApiError.BadRequest('Товар уже добавлен в корзину')
+            }
+        }
+
+        cart.products.push(...productCart)
+        await cart.save()
+        return await this.getDetailProducts(cart.products)
+    }
+
     async removeProduct(productId: Types.ObjectId, userId: Types.ObjectId) {
         const cart = await Cart.findOne({ userId })
 
@@ -102,13 +128,14 @@ class CartService {
 
         const cartProducts = await Product.find(
             { _id: { $in: productIds } },
-            { image: 1, name: 1, price: 1, discount: 1 }
+            { image: 1, name: 1, price: 1, discount: 1, url: 1 }
         )
 
         const productsWithDetails = products.map((product) => {
             const foundProduct = cartProducts.find((p) => p._id.equals(product.productId))
             return {
                 id: foundProduct!._id,
+                url: foundProduct!.url,
                 image: foundProduct!.image,
                 name: foundProduct!.name,
                 price: foundProduct!.price,

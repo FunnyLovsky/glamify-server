@@ -15,15 +15,15 @@ class UserControllers {
                 sameSite: 'none',
             })
             return res.status(200).json(userData)
-        } catch (error: any) {
+        } catch (error) {
             next(error)
         }
     }
 
     async login(reg: Request, res: Response, next: NextFunction) {
         try {
-            const { email, password } = reg.body
-            const userData = await userService.login(email, password)
+            const { email, password, products } = reg.body
+            const userData = await userService.login(email, password, products)
             res.cookie('refreshToken', userData.refreshToken, {
                 maxAge: 30 * 24 * 3600 * 1000,
                 httpOnly: true,

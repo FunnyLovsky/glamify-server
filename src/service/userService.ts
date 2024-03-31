@@ -39,7 +39,7 @@ class UserService {
         })) as { refreshToken: string }
     }
 
-    async login(email: string, password: string) {
+    async login(email: string, password: string, products: ProductCartSchema[] | null) {
         const user = await User.findOne({ email })
 
         if (!user) {
@@ -52,11 +52,13 @@ class UserService {
             throw ApiError.BadRequest(`Неверный пароль`)
         }
 
-        const userDto = new UserDto(user)
-        const tokens = tokenService.generateTokens({ ...userDto })
-        await tokenService.saveToken(userDto.id, tokens.refreshToken)
-        const cart = await cartService.getCartProducts(userDto.id)
-        return { ...tokens, user: userDto, cart }
+        return (await transactionService.withTransaction(async (session) => {
+            const userDto = new UserDto(user)
+            const tokens = tokenService.generateTokens({ ...userDto })
+            await tokenService.saveToken(userDto.id, tokens.refreshToken, session)
+            const cart = await cartService.addProductList(products, userDto.id)
+            return { ...tokens, user: userDto, cart }
+        })) as { refreshToken: string }
     }
 
     async refresh(refreshToken: string) {
