@@ -38,6 +38,7 @@ class CartService {
 
     async addProductList(productCart: ProductCartSchema[] | null, userId: Types.ObjectId) {
         const cart = await Cart.findOne({ userId })
+        const addProducts: ProductCartSchema[] = []
 
         if (!cart) {
             throw ApiError.BadRequest('Корзина не существует')
@@ -52,12 +53,12 @@ class CartService {
                 item.productId.equals(product.productId)
             )
 
-            if (existingProduct) {
-                throw ApiError.BadRequest('Товар уже добавлен в корзину')
+            if (!existingProduct) {
+                addProducts.push(product)
             }
         }
 
-        cart.products.push(...productCart)
+        cart.products.push(...addProducts)
         await cart.save()
         return await this.getDetailProducts(cart.products)
     }
